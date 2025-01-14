@@ -1,7 +1,7 @@
 package main;
 
 import dao.AlumnoDao;
-import dao.AlumnoDaoImpl;
+import dao.AlumnoBD;
 import vista.IVista;
 import vista.VistaConsola;
 
