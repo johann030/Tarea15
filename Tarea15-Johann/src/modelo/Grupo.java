@@ -1,32 +1,31 @@
 package modelo;
 
-import java.util.Objects;
-
 public class Grupo {
-	private int codigoGrupo;
+	private int id_grupo;
 	private String nombre;
+	private String ciclo;
 	private int aula;
 
 	public Grupo() {
-
 	}
 
-	public Grupo(int codigo) {
-		this.codigoGrupo = codigo;
-	}
-
-	public Grupo(int codigo, String nombre, int aula) {
-		this.codigoGrupo = codigo;
+	public Grupo(String nombre, String ciclo, int aula) {
 		this.nombre = nombre;
+		this.ciclo = ciclo;
 		this.aula = aula;
 	}
 
-	public int getCodigoGrupo() {
-		return codigoGrupo;
+	public Grupo(int id_grupo, String nombre, String ciclo, int aula) {
+		this(nombre, ciclo, aula);
+		this.id_grupo = id_grupo;
 	}
 
-	public void setCodigoGrupo(int codigoGrupo) {
-		this.codigoGrupo = codigoGrupo;
+	public int getId_grupo() {
+		return id_grupo;
+	}
+
+	public void setId_grupo(int id_grupo) {
+		this.id_grupo = id_grupo;
 	}
 
 	public String getNombre() {
@@ -35,6 +34,14 @@ public class Grupo {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getCiclo() {
+		return ciclo;
+	}
+
+	public void setCiclo(String ciclo) {
+		this.ciclo = ciclo;
 	}
 
 	public int getAula() {
@@ -46,24 +53,7 @@ public class Grupo {
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(aula, codigoGrupo, nombre);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Grupo other = (Grupo) obj;
-		return aula == other.aula && codigoGrupo == other.codigoGrupo && Objects.equals(nombre, other.nombre);
-	}
-
-	@Override
 	public String toString() {
-		return "Grupo [codigoGrupo=" + codigoGrupo + ", nombre=" + nombre + ", aula=" + aula + "]";
+		return "Grupo [id_grupo=" + id_grupo + ", nombre=" + nombre + ", ciclo=" + ciclo + ", aula=" + aula + "]";
 	}
 }

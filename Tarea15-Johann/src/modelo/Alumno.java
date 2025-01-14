@@ -1,7 +1,6 @@
 package modelo;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class Alumno {
 	private int nia;
@@ -11,13 +10,13 @@ public class Alumno {
 	private LocalDate nacimiento;
 	private String ciclo;
 	private String curso;
-	private Grupo gp;
+	private int id_grupo;
 
 	public Alumno() {
 	}
 
 	public Alumno(int nia, String nombre, String apellidos, String genero, LocalDate nacimiento, String ciclo,
-			String curso, Grupo nombreGrupo) {
+			String curso, int id_grupo) {
 		this.nia = nia;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
@@ -25,7 +24,7 @@ public class Alumno {
 		this.nacimiento = nacimiento;
 		this.ciclo = ciclo;
 		this.curso = curso;
-		this.gp = nombreGrupo;
+		this.id_grupo = id_grupo;
 	}
 
 	public int getNia() {
@@ -84,37 +83,18 @@ public class Alumno {
 		this.curso = curso;
 	}
 
-	public Grupo getGp() {
-		return gp;
+	public int getId_grupo() {
+		return id_grupo;
 	}
 
-	public void setGp(Grupo gp) {
-		this.gp = gp;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(apellidos, ciclo, curso, genero, gp, nacimiento, nia, nombre);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Alumno other = (Alumno) obj;
-		return Objects.equals(apellidos, other.apellidos) && Objects.equals(ciclo, other.ciclo)
-				&& Objects.equals(curso, other.curso) && Objects.equals(genero, other.genero)
-				&& Objects.equals(gp, other.gp) && Objects.equals(nacimiento, other.nacimiento) && nia == other.nia
-				&& Objects.equals(nombre, other.nombre);
+	public void setId_grupo(int id_grupo) {
+		this.id_grupo = id_grupo;
 	}
 
 	@Override
 	public String toString() {
 		return "Alumno [nia=" + nia + ", nombre=" + nombre + ", apellidos=" + apellidos + ", genero=" + genero
-				+ ", nacimiento=" + nacimiento + ", ciclo=" + ciclo + ", curso=" + curso + ", gp=" + gp + "]";
+				+ ", nacimiento=" + nacimiento + ", ciclo=" + ciclo + ", curso=" + curso + ", id_grupo=" + id_grupo
+				+ "]";
 	}
 }

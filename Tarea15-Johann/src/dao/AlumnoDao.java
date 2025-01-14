@@ -7,25 +7,25 @@ import modelo.Grupo;
 
 public interface AlumnoDao {
 
-	int insertarAlumno(Alumno al);
+	int insertarAlumno(Alumno al) throws Exception;
 
-	int insertarGrupo(Grupo gp);
+	int insertarGrupo(Grupo gp) throws Exception;
 
-	List<Alumno> mostrarAlumnos();
+	List<Alumno> mostrarAlumnos() throws Exception;
 
-	void guardarTxt();
+	void guardarTxtAlumnos() throws Exception;
 
-	void leerTxt();
+	void leerTxtAlumnos() throws Exception;
 
-	int cambiarNombre(int id);
+	int cambiarNombre(int id) throws Exception;
 
-	void borrarPK(int id);
+	void borrarPorPK(int id) throws Exception;
 
-	void borrarApellido(Alumno al);
+	void borrarPorApellido(Alumno al) throws Exception;
 
-	void borrarGrupo(Grupo gp);
+	void borrarAlumnosDeGrupo(Grupo gp) throws Exception;
 
-	void guardarXml(Alumno al);
+	void guardarXmlGrupos(Alumno al) throws Exception;
 
-	void leerXml(Alumno al);
+	void leerXmlGrupos(Alumno al) throws Exception;
 }
