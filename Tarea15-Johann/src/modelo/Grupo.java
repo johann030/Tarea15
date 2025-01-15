@@ -3,20 +3,18 @@ package modelo;
 public class Grupo {
 	private int id_grupo;
 	private String nombre;
-	private String ciclo;
 	private int aula;
 
 	public Grupo() {
 	}
 
-	public Grupo(String nombre, String ciclo, int aula) {
+	public Grupo(String nombre, int aula) {
 		this.nombre = nombre;
-		this.ciclo = ciclo;
 		this.aula = aula;
 	}
 
-	public Grupo(int id_grupo, String nombre, String ciclo, int aula) {
-		this(nombre, ciclo, aula);
+	public Grupo(int id_grupo, String nombre, int aula) {
+		this(nombre, aula);
 		this.id_grupo = id_grupo;
 	}
 
@@ -36,24 +34,11 @@ public class Grupo {
 		this.nombre = nombre;
 	}
 
-	public String getCiclo() {
-		return ciclo;
-	}
-
-	public void setCiclo(String ciclo) {
-		this.ciclo = ciclo;
-	}
-
 	public int getAula() {
 		return aula;
 	}
 
 	public void setAula(int aula) {
 		this.aula = aula;
-	}
-
-	@Override
-	public String toString() {
-		return "Grupo [id_grupo=" + id_grupo + ", nombre=" + nombre + ", ciclo=" + ciclo + ", aula=" + aula + "]";
 	}
 }
