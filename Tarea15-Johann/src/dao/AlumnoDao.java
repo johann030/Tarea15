@@ -17,15 +17,15 @@ public interface AlumnoDao {
 
 	void leerTxtAlumnos() throws Exception;
 
-	int cambiarNombre(Alumno al) throws Exception;
+	int cambiarNombre(String nombre, int id) throws Exception;
 
 	void borrarPorPK(int id) throws Exception;
 
 	void borrarPorApellido(String apellido) throws Exception;
 
-	void borrarAlumnosDeGrupo(int id_grupo) throws Exception;
+	void borrarAlumnosPorCurso(String curso) throws Exception;
 
-	void guardarXmlGrupos() throws Exception;
+	void guardarJSONGrupos() throws Exception;
 
-	void leerXmlGrupos() throws Exception;
+	void leerJSONGrupos() throws Exception;
 }

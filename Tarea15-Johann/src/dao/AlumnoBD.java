@@ -1,6 +1,8 @@
 package dao;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.Date;
@@ -78,15 +80,13 @@ public class AlumnoBD implements AlumnoDao {
 				FROM alumnos
 				""";
 
-		List<Alumno> resultado = new ArrayList<Alumno>();
+		List<Alumno> resultado = new ArrayList<>();
 
 		try (Connection conn = Conexion.getConnection();
 				PreparedStatement ps = conn.prepareStatement(sql);
 				ResultSet rs = ps.executeQuery()) {
 
 			Alumno al;
-
-			System.out.println("----Lista de alumnos----");
 
 			while (rs.next()) {
 				al = new Alumno();
@@ -118,7 +118,7 @@ public class AlumnoBD implements AlumnoDao {
 				ResultSet rs = ps.executeQuery()) {
 
 			while (rs.next()) {
-				bw.write(String.format("%d, %s, %s, %s, %s, %s, %s, %d, %n", rs.getInt("NIA"), rs.getString("nombre"),
+				bw.write(String.format("%d, %s, %s, %s, %s, %s, %s, %d", rs.getInt("NIA"), rs.getString("nombre"),
 						rs.getString("apellidos"), rs.getString("genero"), rs.getDate("fecha_nacimiento").toLocalDate(),
 						rs.getString("ciclo"), rs.getString("curso"), rs.getInt("id_grupo")));
 				bw.newLine();
@@ -131,12 +131,43 @@ public class AlumnoBD implements AlumnoDao {
 
 	@Override
 	public void leerTxtAlumnos() throws Exception {
-		// TODO Auto-generated method stub
+		String sql = """
+				INSERT INTO alumnos(NIA, nombre, apellidos, genero, fecha_nacimiento, ciclo, curso, id_grupo)
+				VALUES (?,?,?,?,?,?,?,?)
+				""";
 
+		String lineas;
+		try (BufferedReader br = new BufferedReader(new FileReader("alumnos.txt"));
+				Connection conn = Conexion.getConnection();
+				PreparedStatement ps = conn.prepareStatement(sql)) {
+
+			while ((lineas = br.readLine()) != null) {
+				String[] alumnoData = lineas.split(",");
+				int nia = Integer.parseInt(alumnoData[0]);
+				String nombre = alumnoData[1].trim();
+				String apellidos = alumnoData[2].trim();
+				String genero = alumnoData[3].trim();
+				String fechaNacimiento = alumnoData[4].trim();
+				String ciclo = alumnoData[5].trim();
+				String curso = alumnoData[6].trim();
+				int id_grupo = Integer.parseInt(alumnoData[7].trim());
+
+				ps.setInt(1, nia);
+				ps.setString(2, nombre);
+				ps.setString(3, apellidos);
+				ps.setString(4, genero);
+				ps.setDate(5, Date.valueOf(fechaNacimiento));
+				ps.setString(6, ciclo);
+				ps.setString(7, curso);
+				ps.setInt(8, id_grupo);
+
+				ps.executeUpdate();
+			}
+		}
 	}
 
 	@Override
-	public int cambiarNombre(Alumno al) throws Exception {
+	public int cambiarNombre(String nombre, int id) throws Exception {
 		String sql = """
 				UPDATE alumnos
 				SET nombre = ?
@@ -146,8 +177,8 @@ public class AlumnoBD implements AlumnoDao {
 		int resultado;
 
 		try (Connection conn = Conexion.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setString(1, al.getNombre());
-			ps.setInt(2, al.getNia());
+			ps.setString(1, nombre);
+			ps.setInt(2, id);
 
 			resultado = ps.executeUpdate();
 		}
@@ -181,26 +212,26 @@ public class AlumnoBD implements AlumnoDao {
 	}
 
 	@Override
-	public void borrarAlumnosDeGrupo(int id_grupo) throws Exception {
+	public void borrarAlumnosPorCurso(String curso) throws Exception {
 		String sql = """
 				DELETE FROM alumnos
 				WHERE id_grupo = ?
 				""";
 
 		try (Connection conn = Conexion.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, id_grupo);
+			ps.setString(1, curso);
 			ps.executeUpdate();
 		}
 	}
 
 	@Override
-	public void guardarXmlGrupos() throws Exception {
+	public void guardarJSONGrupos() throws Exception {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void leerXmlGrupos() throws Exception {
+	public void leerJSONGrupos() throws Exception {
 		// TODO Auto-generated method stub
 
 	}

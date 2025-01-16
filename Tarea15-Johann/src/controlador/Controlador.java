@@ -1,4 +1,4 @@
-package main;
+package controlador;
 
 import dao.AlumnoDao;
 import dao.AlumnoBD;
@@ -8,13 +8,12 @@ import vista.VistaConsola;
 public class Controlador {
 
 	public static void main(String[] args) throws Exception {
-//		AlumnoDao modelo = new AlumnoBD();
+		AlumnoDao modelo = AlumnoBD.getInstance();
 		IVista vista = new VistaConsola();
-//		new Controlador().ejecutar(modelo, vista);
-
+		new Controlador().ejecutar(modelo, vista);
 	}
 
 	public void ejecutar(AlumnoDao modelo, IVista vista) {
-		// TODO
+		vista.init();
 	}
 }
