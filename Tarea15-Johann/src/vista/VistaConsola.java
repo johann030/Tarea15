@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import dao.AlumnoBD;
@@ -210,7 +211,13 @@ public class VistaConsola implements IVista {
 		System.out.println("\nLISTA DE ALUMNOS");
 		System.out.println("----------------");
 		try {
-			dao.mostrarAlumnos();
+			List<Alumno> alumnos = dao.mostrarAlumnos();
+
+			if (alumnos.isEmpty()) {
+				System.out.println("No hay alumnos registrados.");
+			} else {
+				alumnos.forEach(System.out::println);
+			}
 		} catch (Exception e) {
 			System.err.println("Error al mostrar los alumnos.");
 			e.printStackTrace();
@@ -292,13 +299,16 @@ public class VistaConsola implements IVista {
 	}
 
 	public void borrarPorCurso() {
-		System.out.println("\nBORRAR POR APELLIDO");
-		System.out.println("-----------------------");
-		System.out.print("Introduzca el nia del alumno: ");
-		String curso = reader.nextLine();
 		try {
+			System.out.println("\nLISTA DE CURSOS");
+			System.out.println("-----------------------");
+			dao.mostrarCursos();
+			System.out.println("\nBORRAR POR CURSO");
+			System.out.println("-----------------------");
+			System.out.print("Introduzca el nia del alumno: ");
+			String curso = reader.nextLine();
 			dao.borrarAlumnosPorCurso(curso);
-			System.out.println("Se ha borrado al alumno correctamente.");
+			System.out.println("Se han borrado los alumnos correctamente.");
 		} catch (Exception e) {
 			System.err.println("Error al borrar el alumno.");
 			e.printStackTrace();

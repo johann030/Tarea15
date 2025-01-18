@@ -80,7 +80,7 @@ public class AlumnoBD implements AlumnoDao {
 				FROM alumnos
 				""";
 
-		List<Alumno> resultado = new ArrayList<>();
+		ArrayList<Alumno> resultado = new ArrayList<>();
 
 		try (Connection conn = Conexion.getConnection();
 				PreparedStatement ps = conn.prepareStatement(sql);
@@ -96,8 +96,8 @@ public class AlumnoBD implements AlumnoDao {
 				al.setGenero(rs.getString("genero"));
 				al.setNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
 				al.setCiclo(rs.getString("ciclo"));
-				al.setCiclo(rs.getString("curso"));
-				al.setNia(rs.getInt("id_grupo"));
+				al.setCurso(rs.getString("curso"));
+				al.setId_grupo(rs.getInt("id_grupo"));
 
 				resultado.add(al);
 			}
@@ -236,4 +236,18 @@ public class AlumnoBD implements AlumnoDao {
 
 	}
 
+	public void mostrarCursos() throws Exception {
+		String sql = """
+				SELECT curso
+				FROM alumnos
+				GROUP BY curso
+				""";
+		try (Connection conn = Conexion.getConnection();
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ResultSet rs = ps.executeQuery()) {
+			while (rs.next()) {
+				System.out.println(rs.getString("curso"));
+			}
+		}
+	}
 }
