@@ -8,8 +8,14 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import modelo.Alumno;
 import modelo.Grupo;
@@ -224,16 +230,96 @@ public class AlumnoBD implements AlumnoDao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void guardarJSONGrupos() throws Exception {
-		// TODO Auto-generated method stub
+		String sqlGrupos = """
+				SELECT id_grupo, nombre_grupo,aula
+				FROM grupos
+				""";
 
+		String sqlAlumnos = """
+				SELECT NIA, nombre, apellidos, genero, fecha_nacimiento, ciclo, curso
+				FROM alumnos WHERE id_grupo = ?
+				""";
+
+		JSONArray listaGrupos = new JSONArray();
+
+		try (Connection conn = Conexion.getConnection();
+				PreparedStatement psGrupos = conn.prepareStatement(sqlGrupos);
+				ResultSet rsGrupos = psGrupos.executeQuery();
+				FileWriter JSON = new FileWriter("grupos.json")) {
+
+			while (rsGrupos.next()) {
+				JSONObject grupoJSON = new JSONObject();
+				grupoJSON.put("id_grupo", rsGrupos.getInt("id_grupo"));
+				grupoJSON.put("nombre_grupo", rsGrupos.getString("nombre_grupo"));
+				grupoJSON.put("aula", rsGrupos.getInt("aula"));
+
+				JSONArray listaAlumnos = new JSONArray();
+				try (PreparedStatement psAlumnos = conn.prepareStatement(sqlAlumnos)) {
+					psAlumnos.setInt(1, rsGrupos.getInt("id_grupo"));
+					try (ResultSet rsAlumnos = psAlumnos.executeQuery()) {
+						while (rsAlumnos.next()) {
+							JSONObject alumnoJSON = new JSONObject();
+							alumnoJSON.put("NIA", rsAlumnos.getInt("NIA"));
+							alumnoJSON.put("nombre", rsAlumnos.getString("nombre"));
+							alumnoJSON.put("apellidos", rsAlumnos.getString("apellidos"));
+							alumnoJSON.put("genero", rsAlumnos.getString("genero"));
+							alumnoJSON.put("fecha_nacimiento", rsAlumnos.getDate("fecha_nacimiento").toString());
+							alumnoJSON.put("ciclo", rsAlumnos.getString("ciclo"));
+							alumnoJSON.put("curso", rsAlumnos.getString("curso"));
+
+							listaAlumnos.add(alumnoJSON);
+						}
+					}
+				}
+				grupoJSON.put("alumnos", listaAlumnos);
+
+				listaGrupos.add(grupoJSON);
+
+			}
+			JSON.write(listaGrupos.toJSONString());
+		}
 	}
 
 	@Override
 	public void leerJSONGrupos() throws Exception {
-		// TODO Auto-generated method stub
+		String ruta = "grupos.json";
 
+		try {
+			JSONParser parser = new JSONParser();
+			JSONArray gruposArray = (JSONArray) parser.parse(new FileReader(ruta));
+
+			for (Object grupoObj : gruposArray) {
+				JSONObject grupoJSON = (JSONObject) grupoObj;
+
+				int id_grupo = ((Long) grupoJSON.get("id_grupo")).intValue();
+				String nombre_grupo = (String) grupoJSON.get("nombre_grupo");
+				int aula = ((Long) grupoJSON.get("aula")).intValue();
+
+				insertarGrupo(new Grupo(id_grupo, nombre_grupo, aula));
+
+				JSONArray alumnosArray = (JSONArray) grupoJSON.get("alumnos");
+				for (Object alumnoObj : alumnosArray) {
+					JSONObject alumnoJSON = (JSONObject) alumnoObj;
+
+					int NIA = ((Long) alumnoJSON.get("NIA")).intValue();
+					String nombre = (String) alumnoJSON.get("nombre");
+					String apellidos = (String) alumnoJSON.get("apellidos");
+					String genero = (String) alumnoJSON.get("genero");
+					String fechaNacimientoStr = (String) alumnoJSON.get("fecha_nacimiento");
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					LocalDate fecha_nacimiento = LocalDate.parse(fechaNacimientoStr, formatter);
+					String ciclo = (String) alumnoJSON.get("ciclo");
+					String curso = (String) alumnoJSON.get("curso");
+					insertarAlumno(
+							new Alumno(NIA, nombre, apellidos, genero, fecha_nacimiento, ciclo, curso, id_grupo));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void mostrarCursos() throws Exception {
